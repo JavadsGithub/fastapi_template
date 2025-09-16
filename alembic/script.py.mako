@@ -1,0 +1,3 @@
+<%!
+from alembic import op
+%>

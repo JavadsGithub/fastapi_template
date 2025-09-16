@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean
 from app.db.base import Base
 
-
 class Item(Base):
     __tablename__ = "items"
 

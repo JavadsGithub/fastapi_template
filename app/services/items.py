@@ -1,8 +1,7 @@
-from typing import List
+from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.repositories.items import ItemsRepository
 from app.schemas.item import ItemCreate, ItemUpdate
-
 
 class ItemsService:
     def __init__(self, db: AsyncSession):
