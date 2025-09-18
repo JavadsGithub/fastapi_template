@@ -6,4 +6,4 @@ RUN pip install pdm
 RUN pip install uvicorn
 RUN pdm install
 COPY . /app
-CMD ["pdm", "run", "uvicorn", "main:app", "--reload"]
+CMD ["pdm", "run", "uvicorn", "app.main:app", "--reload"]
