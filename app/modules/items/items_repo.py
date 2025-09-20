@@ -1,8 +1,9 @@
+# app/modules/items/items_repo.py
 from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from app.models.item import Item as ItemModel
-from app.schemas.item import ItemCreate, ItemUpdate
+from app.modules.items.items_entity import Item as ItemModel
+from app.modules.items.items_schema import ItemCreate, ItemUpdate
 
 class ItemsRepository:
     def __init__(self, db: AsyncSession):
@@ -17,7 +18,8 @@ class ItemsRepository:
         return q.scalars().all()
 
     async def create(self, payload: ItemCreate) -> ItemModel:
-        db_obj = ItemModel(**payload.dict())
+        #db_obj = ItemModel(**payload.dict()) #changed too this:
+        db_obj = ItemModel(**payload.model_dump())
         self.db.add(db_obj)
         await self.db.commit()
         await self.db.refresh(db_obj)

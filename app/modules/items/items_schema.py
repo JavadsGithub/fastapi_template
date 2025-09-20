@@ -1,5 +1,6 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+
 
 class ItemBase(BaseModel):
     name: str
@@ -14,6 +15,6 @@ class ItemUpdate(ItemBase):
 
 class ItemOut(ItemBase):
     id: int
+    
+    model_config = ConfigDict(from_attributes=True) #changed 
 
-    class Config:
-        orm_mode = True

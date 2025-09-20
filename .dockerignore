@@ -1,0 +1,16 @@
+.venv
+.pdm-python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.pytest_cache/
+.git
+.gitignore
+README.md
+.env
+__pypackages__/
+.pdm.toml
