@@ -1,9 +1,8 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi_pagination import Page, Params, paginate
 
 from app.api.deps import get_items_service
-from app.schema.response import StandardResponse
+from app.schema.response import StandardResponse, success
 
 from ..schema.item import ItemCreate, ItemOut, ItemUpdate
 from ..service.item import ItemsService
@@ -20,11 +19,18 @@ async def create_item(
     return await service.create_item(payload)
 
 
-@router.get("/", response_model=StandardResponse[List[ItemOut]])
+@router.get("/", response_model=StandardResponse[Page[ItemOut]])
 async def list_items(
-    limit: int = 100, service: ItemsService = Depends(get_items_service)
+    params: Params = Depends(), service: ItemsService = Depends(get_items_service)
 ):
-    return await service.list_items(limit)
+    items = await service.list_items(params)
+    return success(items)
+
+
+@router.get("/pagination", response_model=StandardResponse[Page[ItemOut]])
+def get_items_custom(params: Params = Depends()):
+    items = [{"id": i, "name": f"Item {i}"} for i in range(100)]
+    return success(paginate(items, params))
 
 
 @router.get("/{item_id}", response_model=StandardResponse[ItemOut])

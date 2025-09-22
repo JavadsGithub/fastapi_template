@@ -14,12 +14,12 @@ class StandardResponse(BaseModel, Generic[T]):
 
 
 def success(
-    message: str = "success", payload: T | None = None
+    payload: T | None = None, message: str = "success"
 ) -> StandardResponse[T] | StandardResponse[None]:
     return StandardResponse(success=True, message=message, payload=payload)
 
 
 def failure(
-    message: str = "failure", payload: T | None = None
+    payload: T | None = None, message: str = "failure"
 ) -> StandardResponse[T] | StandardResponse[None]:
     return StandardResponse(success=False, message=message, payload=payload)

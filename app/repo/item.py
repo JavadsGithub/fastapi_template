@@ -1,11 +1,13 @@
-from typing import List, Optional
+from typing import Optional
+from fastapi_pagination import Page, Params
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from fastapi_pagination.ext.sqlalchemy import paginate
 from ..schema.item import ItemCreate, ItemUpdate
 from ..entities.item import Item
 
 
-class ItemsRepository:
+class ItemsRepo:
     def __init__(self, db: AsyncSession):
         self.db = db
 
@@ -13,9 +15,11 @@ class ItemsRepository:
         q = await self.db.execute(select(Item).where(Item.id == item_id))
         return q.scalars().first()
 
-    async def list(self, limit: int = 100) -> List[Item]:
-        q = await self.db.execute(select(Item).limit(limit))
-        return q.scalars().all()
+    async def list(self, params: Params) -> Page[Item]:
+        q = select(Item).order_by(Item.id)
+        return await paginate(self.db, q, params)
+        # q = await self.db.execute(select(Item).limit(limit))
+        # return q.scalars().all()
 
     async def create(self, payload: ItemCreate) -> Item:
         db_obj = Item(**payload.dict())
