@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: appdb
+      POSTGRES_DB: online_shop_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -17,7 +17,7 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:password@db:5432/appdb
+      DATABASE_URL: postgresql+asyncpg://postgres:password@db:5432/online_shop_db
       SECRET_KEY: change-me-in-prod
     ports:
       - "8000:80"

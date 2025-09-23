@@ -6,7 +6,7 @@ authors = [{ name = "Javad", email = "javadsemail@gmail.com" }]
 dependencies = [
     "fastapi>=0.116.1",
     "uvicorn[standard]>=0.35.0",
-    "SQLAlchemy>=2.0.43",
+    "sqlalchemy>=2.0.43",
     "asyncpg>=0.30.0",
     "alembic>=1.16.5",
     "pydantic>=2.11.9",
@@ -26,6 +26,7 @@ dependencies = [
     "aiosqlite>=0.21.0",
     "fastapi-pagination>=0.14.1",
     "python-multipart>=0.0.20",
+    "psycopg2-binary>=2.9.10",
 ]
 requires-python = "==3.12.*"
 readme = "README.md"
