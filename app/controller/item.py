@@ -16,7 +16,7 @@ router = APIRouter()
 async def create_item(
     payload: ItemCreate, service: ItemsService = Depends(get_items_service)
 ):
-    return await service.create_item(payload)
+    return success(await service.create_item(payload))
 
 
 @router.get("/", response_model=StandardResponse[Page[ItemOut]])
@@ -27,18 +27,12 @@ async def list_items(
     return success(items)
 
 
-@router.get("/pagination", response_model=StandardResponse[Page[ItemOut]])
-def get_items_custom(params: Params = Depends()):
-    items = [{"id": i, "name": f"Item {i}"} for i in range(100)]
-    return success(paginate(items, params))
-
-
 @router.get("/{item_id}", response_model=StandardResponse[ItemOut])
 async def read_item(item_id: int, service: ItemsService = Depends(get_items_service)):
     obj = await service.get_item(item_id)
     if not obj:
         raise HTTPException(status_code=404, detail="Item not found")
-    return obj
+    return success(obj)
 
 
 @router.put("/{item_id}", response_model=StandardResponse[ItemOut])
@@ -50,4 +44,4 @@ async def update_item(
     obj = await service.update_item(item_id, payload)
     if not obj:
         raise HTTPException(status_code=404, detail="Item not found")
-    return obj
+    return success(obj)

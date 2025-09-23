@@ -18,18 +18,16 @@ class ItemsRepo:
     async def list(self, params: Params) -> Page[Item]:
         q = select(Item).order_by(Item.id)
         return await paginate(self.db, q, params)
-        # q = await self.db.execute(select(Item).limit(limit))
-        # return q.scalars().all()
 
     async def create(self, payload: ItemCreate) -> Item:
-        db_obj = Item(**payload.dict())
+        db_obj = Item(**payload.model_dump())
         self.db.add(db_obj)
         await self.db.commit()
         await self.db.refresh(db_obj)
         return db_obj
 
     async def update(self, db_obj: Item, payload: ItemUpdate) -> Item:
-        for field, value in payload.dict(exclude_unset=True).items():
+        for field, value in payload.model_dump(exclude_unset=True).items():
             setattr(db_obj, field, value)
         self.db.add(db_obj)
         await self.db.commit()
