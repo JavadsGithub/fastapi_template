@@ -21,8 +21,7 @@ services:
       SECRET_KEY: change-me-in-prod
     ports:
       - "8000:80"
-    volumes:
-      - .:/app
+
 
 volumes:
   postgres_data:
