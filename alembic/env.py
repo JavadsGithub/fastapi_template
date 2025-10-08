@@ -7,7 +7,9 @@ from alembic import context
 
 from app.db.base import Base
 from app.entities.item import Item
-
+from app.entities.user import  User
+from app.entities.role import Role
+from app.entities.audit import AuditLog
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config

@@ -3,8 +3,9 @@ from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.exceptions import ValidationException
 from fastapi.security import OAuth2PasswordRequestForm
-
+from app.auth.dependencies import get_current_user2
 from pydantic import BaseModel
+from app.auth.dependencies import authorize
 
 from app.core.auth import (
     create_access_token,
@@ -17,6 +18,10 @@ from app.schema.response import success
 
 router = APIRouter()
 
+from app.auth.engine import ABACEngine
+
+
+engine = ABACEngine()
 
 # Mock user DB (replace with real DB in production)
 fake_users_db = {
@@ -59,3 +64,37 @@ async def read_users_me(current_user: dict = Depends(get_current_user)):
 @router.get("/protected")
 async def protected_route(current_user: dict = Depends(get_current_user)):
     return {"message": f"Hello {current_user['username']}, you are authenticated!"}
+
+
+@router.delete("/delete-product2/{product_id}", dependencies=[Depends(authorize("delete", "product"))],)
+def delete_product2(product_id: int, 
+                    current_user: dict = Depends(get_current_user2),
+                    ):
+    """
+    Route تستی برای بررسی سیاست‌های ABAC.
+    """
+    return {"message": f"✅ User {current_user['username']} authorized to delete product {product_id}"}
+
+
+""""
+@router.get("/delete-product")
+def delete_product(product_id: int, current_user: dict = Depends(get_current_user2)):
+    
+    #Route تستی برای بررسی سیاست‌های ABAC.
+    
+    context = {
+        "user": current_user,
+        "resource": {"type": "product", "id": product_id},
+        "action": "delete",
+        "env": {"hour": 10},
+    }
+
+    allowed = engine.check_access(context)
+
+    if not allowed:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access Denied")
+
+    return {"message": f"User {current_user['username']} is allowed to delete product {product_id}"}
+"""
+
+
