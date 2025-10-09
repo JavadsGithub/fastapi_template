@@ -1,16 +1,20 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
+
 WORKDIR /app
 ENV PYTHONUNBUFFERED=1
 
-# ابتدا فایل‌های مربوط به پکیج‌ها را کپی کن
+# Copy dependency files first (for better caching)
 COPY pyproject.toml pdm.lock ./
 
-# PDM را نصب کن و سپس پکیج‌های پروژه را نصب کن
+# Install pdm and dependencies
 RUN pip install pdm
-
 RUN pdm install 
-# حالا بقیه کدهای برنامه را کپی کن
+
+# Copy application code
 COPY . /app
 
-# CMD برای اجرای برنامه
-CMD ["pdm", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+# Expose the correct port
+
+
+# Run the application (remove --reload for production)
+CMD ["pdm", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   db:
     image: postgres:15
@@ -7,10 +6,10 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: online_shop_db
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Add volume for data persistence
 
   web:
     build: .
@@ -20,8 +19,8 @@ services:
       DATABASE_URL: postgresql+asyncpg://postgres:password@db:5432/online_shop_db
       SECRET_KEY: change-me-in-prod
     ports:
-      - "8000:80"
-
+      - "8000:8000" # Fixed port mapping
+# Optional: for development with hot reload
 
 volumes:
   postgres_data:
