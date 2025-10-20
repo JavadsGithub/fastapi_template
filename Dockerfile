@@ -7,10 +7,6 @@ ENV PYTHONUNBUFFERED=1
 COPY pyproject.toml pdm.lock ./
 
 
-#RUN apt-get update && apt-get install -y build-essential libffi-dev python3-dev
-#RUN pip install --upgrade pip setuptools wheel
-#RUN pip install --force-reinstall bcrypt==4.1.3
-
 
 # Install pdm and dependencies
 RUN pip install pdm

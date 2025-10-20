@@ -1,7 +1,9 @@
+# app/entities/role.py
 from sqlalchemy import Column, Integer, String, Text
 from sqlalchemy.orm import relationship
 from app.db.base import Base
-from .associations import user_role  # ✅ ایمپورت جدول ارتباطی
+from .associations import user_role
+
 
 class Role(Base):
     __tablename__ = "roles"

@@ -1,8 +1,10 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+# app/entities/user.py
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from datetime import datetime
+from datetime import datetime, timezone
 from app.db.base import Base
-from .associations import user_role  
+from .associations import user_role
+
 
 class User(Base):
     __tablename__ = "users"
@@ -16,9 +18,13 @@ class User(Base):
     phone = Column(String)
     is_active = Column(Boolean, default=True)
     last_login = Column(DateTime)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(
+        DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+    )
 
     roles = relationship("Role", secondary=user_role, back_populates="users")
-    owned_products = relationship("Product", back_populates="owner")  
-    orders = relationship("Order", back_populates="user") 
+    owned_products = relationship("Product", back_populates="owner")
+    orders = relationship("Order", back_populates="user")

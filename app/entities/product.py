@@ -1,8 +1,18 @@
-# app/models/product.py
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, Numeric
+# app/entities/product.py
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Text,
+    Boolean,
+    DateTime,
+    ForeignKey,
+    Numeric,
+)
 from sqlalchemy.orm import relationship
-from datetime import datetime
+from datetime import datetime, timezone
 from app.db.base import Base
+
 
 class Product(Base):
     __tablename__ = "products"
@@ -11,19 +21,21 @@ class Product(Base):
     name = Column(String, nullable=False)
     description = Column(Text)
     price = Column(Numeric(precision=10, scale=2), nullable=False)
-    file_type = Column(String, nullable=False)  # e.g., "dataset", "book"
+    file_type = Column(String, nullable=False)
     format = Column(String)
     writer = Column(String)
     release_date = Column(DateTime)
-    status = Column(String, default="active")  # active, draft, deleted
+    status = Column(String, default="active")
     download_count = Column(Integer, default=0)
     rating_average = Column(Numeric(precision=3, scale=2), default=0.0)
     rating_count = Column(Integer, default=0)
-    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False) 
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     is_public = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(
+        DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+    )
 
-    # رابطه با کاربر (مالک)
     owner = relationship("User", back_populates="owned_products")
- 

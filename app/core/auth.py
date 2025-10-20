@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 from fastapi import Depends, HTTPException, status, Path
 from fastapi.security import OAuth2PasswordBearer
@@ -32,10 +32,10 @@ async def authenticate_user(
 def create_access_token(claims: dict, expires_delta: Optional[timedelta] = None) -> str:
     claims_to_encode = claims.copy()
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
         claims_to_encode.update({"exp": expire})
     else:
-        expire = datetime.utcnow() + timedelta(
+        expire = datetime.now(timezone.utc) + timedelta(
             minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
         )
         claims_to_encode.update({"exp": expire})

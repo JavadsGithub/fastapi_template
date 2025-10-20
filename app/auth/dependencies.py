@@ -1,6 +1,6 @@
 # app/auth/dependencies.py
-from fastapi import Depends, HTTPException, status, Path
-from datetime import datetime
+from fastapi import Depends, HTTPException, status
+from datetime import datetime, timezone
 
 from app.auth.engine import ABACEngine
 from app.db.session import get_db
@@ -16,31 +16,6 @@ from app.core.auth import (
 
 
 engine = ABACEngine()
-
-"""
-# -------------------- FAKE USER & PRODUCT (موقت) --------------------
-def get_current_user2():
-    # بعداً این از توکن و دیتابیس میاد
-    return {
-        "id": 20,
-        "username": "seller_user",
-        "roles": ["seller"],
-        "purchased_product_ids": [101, 102],
-    }
-
-def get_product(product_id: int = Path(...)):
-    # بعداً این از دیتابیس میاد
-    # فرض: محصول با id=100 متعلق به کاربر 20 هست
-    return {
-        "id": product_id,
-        "owner_id": 20,
-        "is_public": False,
-        "type": "product",  # مهم برای ساخت policy_name
-    }
-
-# -------------------- AUTHORIZATION DEPENDENCY --------------------
-
-"""
 
 
 def authorize(action: str, resource_type: str):
@@ -60,13 +35,11 @@ def authorize(action: str, resource_type: str):
                 "type": "product",
             },
             "action": action,
-            "env": {"hour": datetime.utcnow().hour, "purchased_ids": purchased_ids},
+            "env": {
+                "hour": datetime.now(timezone.utc).hour,
+                "purchased_ids": purchased_ids,
+            },
         }
-
-        print("🟢 DEBUG: current_user.id:", current_user.id)
-        print("🟢 DEBUG: current_product.owner_id:", current_product.owner_id)
-        print("🟢 DEBUG: hour:", context["env"]["hour"])
-
         allowed = engine.check_access(context)
         if not allowed:
             raise HTTPException(
