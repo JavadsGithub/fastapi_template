@@ -71,6 +71,21 @@ Thumbs.db
 # Local Config Files (optional)
 # ==============================
 
-# config.local.py
-# local_settings.py
-.env
+
+
+
+# ==============================
+# onfig Files (optional)
+# ==============================
+
+
+
+
+
+
+
+# ==============================
+# Environment Variables Files
+# ==============================
+#.env
+#*.env

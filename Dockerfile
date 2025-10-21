@@ -17,8 +17,5 @@ COPY . /app
 COPY .env .env
 
 
-# Expose the correct port
-
-
 # Run the application (remove --reload for production)
 CMD ["pdm", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
