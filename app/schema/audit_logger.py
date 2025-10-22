@@ -1,5 +1,5 @@
 # app/schema/audit_logger.py
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime
 
@@ -20,5 +20,4 @@ class AuditLogResponse(AuditLogCreate):
     id: int
     created_at: datetime
 
-    class Config:
-        from_attributes = True  # برای Pydantic v2
+    model_config = ConfigDict(from_attributes=True)
