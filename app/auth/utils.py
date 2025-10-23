@@ -2,12 +2,14 @@
 
 from typing import Any
 
+
 def get_attr(obj, attr: str, default=None):
     if isinstance(obj, dict):
         return obj.get(attr, default)
     return getattr(obj, attr, default)
 
-def is_admin(user: Any) -> bool:
+
+def utils_is_admin(user: Any) -> bool:
     if isinstance(user, dict):
         roles = user.get("roles", [])
         return "admin" in roles

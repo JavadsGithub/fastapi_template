@@ -16,7 +16,8 @@ from app.core.auth import (
     get_purchased_product_ids,
 )
 
-
+# اکنون موتور یک instance جدید در هر درخواست نمی‌سازد — اما برای سادگی همین است
+# (در آینده می‌توانید آن را به عنوان singleton یا dependency inject کنید)
 engine = ABACEngine()
 
 
@@ -46,8 +47,6 @@ def authorize(action: str, resource_type: str):
         policy_name = f"{action}_{resource_type}"
 
         allowed, reason = engine.check_access(context)
-
-        # ✅ ساخت context کامل برای audit
 
         audit_context = {
             "user": current_user,
