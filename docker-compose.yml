@@ -1,11 +1,10 @@
 services:
   db:
     image: postgres:15
-    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: online_shop_db
+      POSTGRES_DB: test_db
     ports:
       - "5432:5432"
     volumes:
@@ -16,8 +15,8 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:password@db:5432/online_shop_db
-      SECRET_KEY: change-me-in-prod
+      DATABASE_URL: postgresql+asyncpg://postgres:password@db:5432/test_db
+      SECRET_KEY: SaJo5Q7tDagL0YTSUYugJ2EZm1Wn09zW/58srLs+bhw=
     ports:
       - "8000:8000" # Fixed port mapping
 # Optional: for development with hot reload
