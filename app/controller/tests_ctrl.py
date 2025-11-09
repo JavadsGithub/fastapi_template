@@ -1,10 +1,10 @@
-# app/controller/tests.py
+# app/controller/tests_ctrl.py
 from fastapi import APIRouter, Depends
 
 from app.entities.user import User
 from app.entities.product import Product
 
-from app.auth.dependencies import authorize
+from app.dependencies.auth_deps import authorize
 
 
 from app.core.auth import (
@@ -16,7 +16,7 @@ from app.core.auth import (
 router = APIRouter()
 
 
-@router.get("/me")
+@router.get("/get_from_ORM/me")
 async def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user
 

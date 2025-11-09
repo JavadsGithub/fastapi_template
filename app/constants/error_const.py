@@ -1,3 +1,4 @@
+# app/constants/error_const.py
 from enum import Enum
 
 

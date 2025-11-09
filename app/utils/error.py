@@ -1,3 +1,4 @@
+# app/utils/error.py
 from http import HTTPStatus
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse

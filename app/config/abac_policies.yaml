@@ -5,20 +5,51 @@ rules:
   in_working_hours: "in_working_hours"
   is_public: "is_public"
   has_purchased: "has_purchased"
+  is_self: "is_self"
+  is_admin_or_self: "is_admin_or_self"
+  anyone: "anyone"
 
 policies:
+  # -----------------------
+  # User-related policies
+  # -----------------------
+
+  register_user:
+    - "anyone"
+
+  create_user:
+    - "is_admin"
+    - "can_assign_roles"
+
+  read_user:
+    - "is_admin"
+    - "is_self"
+
+  list_user:
+    - "is_admin"
+
+  update_user:
+    - "is_admin"
+    - "is_self"
+    - "can_assign_roles"
+
+  delete_user:
+    - "is_admin"
+
+  soft_delete_user:
+    - "is_admin"
+
+  undelete_user:
+    - "is_admin"
+
+  # -----------------------
+  # Product-related policies
+  # -----------------------
+
+  download_product:
+    - "is_admin"
+    - "has_purchased"
+
   delete_product:
     - "is_admin"
     - ["is_owner", "in_working_hours"]
-  download_product:
-    - "is_admin"
-    - "is_public"
-    - "is_owner"
-    - "has_purchased"
-
-  edit_product:
-    - "is_admin"
-    - ["is_owner", "in_working_hours"]
-  create_product:
-    - "is_admin"
-    - "in_working_hours"

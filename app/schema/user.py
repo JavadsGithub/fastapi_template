@@ -1,49 +1,60 @@
-# app/schemas/user.py
-from pydantic import BaseModel, EmailStr
-from typing import List, Optional
+# app/schema/user.py
+from pydantic import BaseModel, EmailStr, Field, ConfigDict  # noqa: F401
+from typing import Optional, List
 from datetime import datetime
 
+
+# ---------- Base ----------
 class UserBase(BaseModel):
+    username: str = Field(..., min_length=3, max_length=50)
+    email: EmailStr
+    first_name: Optional[str] = Field(None, max_length=100)
+    last_name: Optional[str] = Field(None, max_length=100)
+
+
+# ---------- Create ----------
+class UserRegister(UserBase):
+    password: str = Field(..., min_length=6, max_length=100)
+    phone: Optional[str] = Field(None, max_length=100)
+    model_config = ConfigDict(extra="forbid")
+
+
+class UserCreateByAdmin(UserRegister):
+    is_active: Optional[bool] = True
+    roles: Optional[List[str]] = None
+    # اگر roles فرستاده نشود None می‌شود؛ اگر خالی یا [] فرستاده شود در سرویس به معنی "keep default" رفتار می‌کنیم
+
+
+# ---------- Update -------------
+class UserUpdateSelf(BaseModel):
+    first_name: Optional[str] = Field(None, max_length=100)
+    last_name: Optional[str] = Field(None, max_length=100)
+    phone: Optional[str] = Field(None, max_length=100)
+
+
+class UserUpdateByAdmin(UserUpdateSelf):
+    email: Optional[EmailStr] = None
+    is_active: Optional[bool] = None
+    roles: Optional[List[str]] = None
+    # None -> تغییر نقش انجام نشود، [] -> نیز درخواستی برای پاک‌کردن نیست و در این پروژه به معنای "بدون تغییر" درنظر گرفته می‌شود
+
+
+# -------------Read--------------
+class UserReadSelf(UserBase):
+    id: int
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    phone: Optional[str] = Field(None, max_length=100)
+    last_login: Optional[datetime] = None
+
+
+class UserReadByAdmin(UserReadSelf):
+    roles: List[str] = []
+    is_active: bool
+
+
+class UserListItem(BaseModel):
+    id: int
     username: str
     email: EmailStr
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-    phone: Optional[str] = None
-    is_active: bool = True
-
-class UserCreate(UserBase):
-    password: str
-
-class UserUpdate(BaseModel):
-    email: Optional[EmailStr] = None
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-    phone: Optional[str] = None
-    is_active: Optional[bool] = None
-
-class UserInDBBase(UserBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-
-    class Config:
-        from_attributes = True
-
-class User(UserInDBBase):
-    roles: List[str] = []  # فقط عنوان نقش‌ها
-
-    @classmethod
-    def from_orm(cls, user_orm):
-        roles = [role.title for role in user_orm.roles]
-        return cls(
-            id=user_orm.id,
-            username=user_orm.username,
-            email=user_orm.email,
-            first_name=user_orm.first_name,
-            last_name=user_orm.last_name,
-            phone=user_orm.phone,
-            is_active=user_orm.is_active,
-            created_at=user_orm.created_at,
-            updated_at=user_orm.updated_at,
-            roles=roles
-        )
+    is_active: bool

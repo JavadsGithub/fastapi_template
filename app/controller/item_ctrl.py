@@ -1,11 +1,12 @@
+# app/controller/item_ctrl.py
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi_pagination import Page, Params, paginate
+from fastapi_pagination import Page, Params
 
-from app.api.deps import get_items_service
+from app.dependencies.service_deps import get_items_service
 from app.schema.response import StandardResponse, success
 
 from ..schema.item import ItemCreate, ItemOut, ItemUpdate
-from ..service.item import ItemsService
+from ..service.item_serv import ItemsService
 
 router = APIRouter()
 

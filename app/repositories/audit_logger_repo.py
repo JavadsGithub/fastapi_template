@@ -1,4 +1,4 @@
-# app/repo/audit_logger.py
+# app/repositories/audit_logger_repo.py
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.entities.audit import AuditLog
 from app.schema.audit_logger import AuditLogCreate

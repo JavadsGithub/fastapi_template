@@ -1,4 +1,4 @@
-# app/controller/seed.py
+# app/controller/seed_ctrl.py
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 

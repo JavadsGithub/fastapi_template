@@ -1,5 +1,6 @@
-# app/models/order.py
-from sqlalchemy import Column, Integer, String, Numeric, DateTime, ForeignKey
+# app/entities/order.py
+from sqlalchemy import Column, Integer, String, Numeric, ForeignKey
+from sqlalchemy.dialects.postgresql import TIMESTAMP
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from app.db.base import Base
@@ -14,10 +15,13 @@ class Order(Base):
     status = Column(String, default="pending")
     shipping_address = Column(String)
     tracking_number = Column(String)
-    estimated_delivery_date = Column(DateTime)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    estimated_delivery_date = Column(TIMESTAMP(timezone=True))  # <-- تغییر
+    created_at = Column(
+        TIMESTAMP(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+    )
     updated_at = Column(
-        DateTime,
+        TIMESTAMP(timezone=True),
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc),
     )
@@ -34,7 +38,10 @@ class OrderItem(Base):
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
     quantity = Column(Integer, default=1)
     price_at_time = Column(Numeric(precision=10, scale=2), nullable=False)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        TIMESTAMP(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+    )
 
     order = relationship("Order", back_populates="items")
     product = relationship("Product")

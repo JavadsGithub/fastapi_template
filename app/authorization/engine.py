@@ -1,9 +1,10 @@
-# app/auth/engine.py
+# app/authorization/engine.py
 import logging
 from typing import Any, Dict, Tuple
 from functools import lru_cache
-from app.auth.policy_loader import load_policy_config, RULE_FUNCTIONS
-
+from app.authorization.policy_loader import load_policy_config
+from app.constants.auth_const import RULE_FUNCTIONS
+from app.utils.auth_utils import get_attr
 
 type Condition = str | list["Condition"]
 
@@ -68,7 +69,6 @@ class ABACEngine:
         env = context.get("env", {})
 
         allowed, reason = self.evaluate(policy_name, user, resource, env)
-        from app.auth.utils import get_attr
 
         logger.debug(
             f"ABAC check: {policy_name} → {allowed} ({reason}) for user {get_attr(user, 'id')}"

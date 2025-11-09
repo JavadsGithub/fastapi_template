@@ -1,3 +1,4 @@
+# app/schema/response.py
 from typing import Generic, TypeVar
 from pydantic import BaseModel
 
@@ -14,7 +15,7 @@ class StandardResponse(BaseModel, Generic[T]):
 
 
 def success(
-    payload: T | None = None, 
+    payload: T | None = None,
     message: str = "success",
     flat: bool = False,
 ) -> StandardResponse[T] | StandardResponse[None]:
@@ -24,9 +25,8 @@ def success(
     """
     if flat and isinstance(payload, dict):
         return payload  # 🔥 خروجی ساده برای Swagger
-    
-    return StandardResponse(success=True, message=message, payload=payload)
 
+    return StandardResponse(success=True, message=message, payload=payload)
 
 
 def failure(

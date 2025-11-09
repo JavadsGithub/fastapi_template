@@ -1,7 +1,7 @@
 # app/core/auth.py
 from datetime import datetime, timedelta, timezone
 from typing import Optional
-from fastapi import Depends, HTTPException, status, Path
+from fastapi import Depends, HTTPException, status, Path, Request
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 
@@ -14,7 +14,7 @@ from app.db.session import get_db
 from app.entities.user import User
 from app.entities.product import Product
 from app.entities.order import Order, OrderItem
-from app.core.config import settings
+from app.config.base_config import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login", auto_error=True)
 
@@ -95,3 +95,25 @@ async def get_purchased_product_ids(db: AsyncSession, user_id: int) -> set[int]:
     )
     result = await db.scalars(stmt)
     return set(result.all())
+
+
+async def get_current_user_resource(
+    request: Request, db: AsyncSession = Depends(get_db)
+):
+    """
+    اگر مسیر شامل user_id بود، آن کاربر را از دیتابیس بخوان.
+    اگر نبود (مثلاً /users/me)، خود current_user resource است.
+    """
+    path_params = request.path_params
+    user_id = path_params.get("user_id")
+
+    if not user_id:
+        return {"type": "user"}  # برای مسیرهایی مثل register
+
+    result = await db.execute(select(User).where(User.id == int(user_id)))
+    user = result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return user

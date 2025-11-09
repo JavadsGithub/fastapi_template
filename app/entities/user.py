@@ -1,7 +1,8 @@
 # app/entities/user.py
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
+from sqlalchemy.dialects.postgresql import TIMESTAMP
 from app.db.base import Base
 from .associations import user_role
 
@@ -17,12 +18,15 @@ class User(Base):
     last_name = Column(String)
     phone = Column(String)
     is_active = Column(Boolean, default=True)
-    last_login = Column(DateTime)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    last_login = Column(TIMESTAMP(timezone=True))
+    is_deleted = Column(Boolean, default=False, nullable=False)
+    created_at = Column(
+        TIMESTAMP(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
     updated_at = Column(
-        DateTime,
+        TIMESTAMP(timezone=True),
         default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
+        # onupdate=lambda: datetime.now(timezone.utc),
     )
 
     roles = relationship("Role", secondary=user_role, back_populates="users")

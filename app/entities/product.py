@@ -1,14 +1,13 @@
-# app/entities/product.py
 from sqlalchemy import (
     Column,
     Integer,
     String,
     Text,
     Boolean,
-    DateTime,
     ForeignKey,
     Numeric,
 )
+from sqlalchemy.dialects.postgresql import TIMESTAMP
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from app.db.base import Base
@@ -24,16 +23,19 @@ class Product(Base):
     file_type = Column(String, nullable=False)
     format = Column(String)
     writer = Column(String)
-    release_date = Column(DateTime)
+    release_date = Column(TIMESTAMP(timezone=True))  # <-- تغییر داده شد
     status = Column(String, default="active")
     download_count = Column(Integer, default=0)
     rating_average = Column(Numeric(precision=3, scale=2), default=0.0)
     rating_count = Column(Integer, default=0)
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     is_public = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        TIMESTAMP(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+    )
     updated_at = Column(
-        DateTime,
+        TIMESTAMP(timezone=True),
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc),
     )

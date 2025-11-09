@@ -1,4 +1,4 @@
-# app/core/config.py
+# app/config/base_config.py
 from pydantic_settings import BaseSettings
 from typing import List
 from pydantic import ConfigDict
